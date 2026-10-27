@@ -1,0 +1,8 @@
+# dsh-archive-cleaner bundle patch
+#
+# 把插件挂进配置树（宿主半 lib/index.js），并在 package.json 里声明了 dsh.client，
+# 所以浏览器半 client/client.js 会被模块系统扫成 /plugins/dsh-archive-cleaner/client.js。
+
+- insert:
+    - id: dsh-archive-cleaner
+      name: 'dsh-archive-cleaner'
