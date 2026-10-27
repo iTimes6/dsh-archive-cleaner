@@ -1,6 +1,6 @@
 {
   "name": "dsh-archive-cleaner",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "侧边栏里的归档会话清理面板：勾选后永久删除 DSH 里已归档的会话。",
   "type": "module",
   "main": "lib/index.js",

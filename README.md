@@ -27,7 +27,14 @@ node scripts/install.mjs --remove   # 卸载
 2. `~/.dsh/storages/session_projcache/sessions/<id>.json` —— 标题/预览缓存
 3. 从 `~/.dsh/storages/workspace.json` 的 `global.archivedSessionIds`、各工作区 `sessionIds`、`global.pinnedSessionIds` 里摘掉
 
-**不可恢复**，所以面板里有二次确认；未归档或正在运行的会话会被拒（`skipped` 里给原因）。
+**不可恢复**，所以面板里有二次确认。未归档的会被拒；只有文件真被系统占用（`EBUSY` / `EPERM`）才报 `locked`——不再看宿主内存里「这个会话好像还开着」那种靠不住的判断。
+
+个别归档会话死活塞不掉时，用命令行后门（做的是同一套事，绕开面板）：
+
+```bash
+node scripts/purge-one.mjs session-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+```
+
 
 ## 结构
 
@@ -66,10 +73,10 @@ MIT
 
 ```
 GET  /archive-cleaner/api/list
-→ { ok, totalBytes, sessions: [{ id, title, size, archived, onDisk, live, workspace }] }
+→ { ok, totalBytes, sessions: [{ id, title, size, archived, onDisk, workspace }] }
 
 POST /archive-cleaner/api/delete   { ids: string[] }
 → { ok, deleted: string[], skipped: [{ id, reason }], freedBytes }
 ```
 
-`reason` ∈ `not-archived` / `live-session` / `invalid-id`。请求带 `Origin` 时必须同源，否则 403。
+`reason` ∈ `not-archived` / `locked` / `invalid-id`。请求带 `Origin` 时必须同源，否则 403。

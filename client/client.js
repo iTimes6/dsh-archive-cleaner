@@ -230,11 +230,16 @@
               })
               const deleted = Array.isArray(payload.deleted) ? payload.deleted : []
               const skipped = Array.isArray(payload.skipped) ? payload.skipped : []
+              const SKIP_TEXT = {
+                'not-archived': '没归档',
+                locked: '文件被占用',
+                'invalid-id': 'id 不对',
+              }
               const skipText =
                 skipped.length === 0
                   ? ''
                   : `；跳过 ${skipped.length} 个（${skipped
-                      .map((item) => `${shortId(item.id)} ${item.reason}`)
+                      .map((item) => `${shortId(item.id)} ${SKIP_TEXT[item.reason] ?? item.reason}`)
                       .join('、')}）`
               setNotice(`已删除 ${deleted.length} 个，释放 ${formatBytes(payload.freedBytes ?? 0)}${skipText}`)
               setPicked([])
